@@ -2,8 +2,8 @@ const { use } = require('passport');
 const User = require('../models/user');
 
 
-module.exports.profile = function(req, res){
-    User.findById(req.params.id, function(err,user){
+module.exports.profile = async function(req, res){
+    let users = await User.findById(req.params.id, function(err,user){
         return res.render('user_profile', {
             title: 'User Profile',
             profile_user: user
@@ -70,13 +70,16 @@ module.exports.create = function(req, res){
 
 // sign in and create a session for the user
 module.exports.createSession = function(req, res){
+    req.flash('success','Logged in successfully');
     return res.redirect('/');
 }
 
 
 module.exports.destroySession = function(req, res){
+    
     req.logout(function(err) {
         if (err) { return next(err); }
-        res.redirect('/');
+        req.flash('success','logged out');
+        return res.redirect('/');
       });
 }
